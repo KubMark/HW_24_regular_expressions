@@ -2,7 +2,7 @@
 "Функциональное программирование"
 
 Postman request example:
-{
+```python{
     "queries": {
         "cmd1": "regex",
         "value1": "images/\\w+\\.png",
@@ -10,4 +10,4 @@ Postman request example:
         "value2": "asc"
     },
     "file_name": "apache_logs.txt"
-}
+}```
