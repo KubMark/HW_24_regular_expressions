@@ -1,6 +1,13 @@
 import re
 from re import Pattern
-from typing import Iterable, Any
+from typing import Iterable, Any, Generator, Optional, Callable
+from flask import Response, jsonify
+
+
+def read_file(file_name: str) -> Generator:
+    with open(file_name) as file:
+        for line in file:
+            yield line
 
 
 def filter_query(value: str, data: Iterable[str]) -> list:
@@ -34,3 +41,25 @@ def sort_query(value: str, data: Iterable[str]) -> Iterable[str]:
 def regex_query(value: str, data: Iterable[str]) -> Iterable[str]:
     regex: Pattern[str] = re.compile(value)
     return list(filter(lambda x: re.search(regex, x), data))
+
+COMMANDS: dict[Optional[str], Callable] = {
+    'filter': filter_query,
+    'unique': unique_query,
+    'limit': limit_query,
+    'map': map_query,
+    'sort': sort_query,
+    'regex': regex_query
+}
+
+
+def execute(query: dict[str, str], filename: str) -> Response:
+    """
+    Execute user commands
+    """
+    data = read_file(filename)
+    cmd1 = query.get("cmd1")
+    cmd2 = query.get("cmd2")
+    data = COMMANDS[cmd1](value=query["value1"], data=data)
+    if cmd2:
+        data = COMMANDS[cmd2](value=query["value2"], data=data)
+    return jsonify(list(data))
