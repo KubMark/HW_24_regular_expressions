@@ -2,7 +2,8 @@
 "Функциональное программирование"
 
 Postman request example:
-```python{
+```python
+{
     "queries": {
         "cmd1": "regex",
         "value1": "images/\\w+\\.png",
